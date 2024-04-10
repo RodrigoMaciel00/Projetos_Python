@@ -1,0 +1,30 @@
+import random
+
+
+def jogar_jogo():
+    # Gerar um número aleatório entre 1 e 100
+    numero_secreto = random.randint(1, 100)
+    tentativas = 0
+
+    print("Bem-vindo ao jogo de adivinhação!")
+    print("Eu escolhi um número entre 1 e 100. Tente adivinhar.")
+
+    while True:
+        try:
+            tentativa = int(input("Digite sua tentativa: "))
+            tentativas += 1
+
+            if tentativa < numero_secreto:
+                print("Tente um número maior.")
+            elif tentativa > numero_secreto:
+                print("Tente um número menor.")
+            else:
+                print(f"Parabéns! Você acertou em {tentativas} tentativas!")
+                break
+
+        except ValueError:
+            print("Por favor, digite um número válido.")
+
+
+if __name__ == "__main__":
+    jogar_jogo()

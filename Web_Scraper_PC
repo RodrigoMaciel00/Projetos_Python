@@ -1,0 +1,52 @@
+import requests
+from bs4 import BeautifulSoup
+
+
+def scrape_products(url, num_items=10, attributes=('name', 'price')):
+
+    # Enviar uma requisição para o site e obter o conteúdo HTML
+    response = requests.get(url)
+    if not response.ok:
+        print("Failed to fetch the page:", response.status_code)
+        return
+
+    html_content = response.text
+
+    # Parsear o conteúdo HTML com BeautifulSoup
+    soup = BeautifulSoup(html_content, 'html.parser')
+
+    # Encontrar todos os elementos que contêm informações sobre os produtos
+    products = soup.find_all('div', class_='item-container')
+
+    # Limitar a quantidade de itens a serem exibidos
+    num_items = min(num_items, len(products))
+
+    # Iterar sobre os produtos e extrair as informações especificadas
+    for i, product in enumerate(products[:num_items], start=1):
+        product_info = {}
+
+        # Extrair as informações especificadas para cada produto
+        if 'name' in attributes:
+            name_element = product.find('a', class_='item-title')
+            product_info['name'] = name_element.text.strip() if name_element else 'N/A'
+
+        if 'price' in attributes:
+            price_element = product.find('li', class_='price-current')
+            product_info['price'] = price_element.text.strip() if price_element else 'N/A'
+
+        # Exibir as informações na tela
+        print("Produto", i, ":")
+        for attribute in attributes:
+            print(attribute.capitalize() + ":", product_info.get(attribute, "N/A"))
+        print()
+
+
+# URL do site de onde serão raspados os dados (exemplo: Newegg)
+url = 'https://www.newegg.com/Processors-Desktops/SubCategory/ID-343?Tid=136370'
+
+# Quantidade de itens a serem exibidos e atributos a serem extraídos
+num_items = 5
+attributes = ('name', 'price')
+
+# Chamar a função de scraping com os parâmetros especificados
+scrape_products(url, num_items, attributes)
